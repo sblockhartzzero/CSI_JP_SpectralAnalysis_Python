@@ -1,0 +1,117 @@
+# Imports
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
+from datetime import datetime
+
+def load_ndbc_file(desired_year):
+    '''''
+    Inputs: 
+        desired_year e.g. 2021 or 2023
+
+    Outputs:
+        df_wind_speeds:
+            A pandas dataframe that contains the following fields for an entire year of data: 
+                timestamp, wind_speed, wind_dir
+        
+                where:
+                    timestamp is the sample time for the wind_speed, wind_dir
+                    wind_speed is in meters/sec at 10m above mean sea-level
+                    wind_dir is in degrees clockwaise from North, indicating the direction the wind is coming FROM
+
+    This method works only for NDBC site ORIN7 i.e. the site closest to Jennett'S Pier, having wind data.
+    This method knows where the ORIN7 data files are stored in the local filesystem.
+
+    This method loads the data from the NDBC ORIN7 file. 
+    After some QC, it converts wind_speed from knots at 7.5 meters above mean sea-level to m/s at 10 m.
+
+    '''''
+
+    # Constants
+    mps_per_knot= 0.51444   # meters per second per knot
+    
+    # Get fullpath of NDBC csv file
+    csv_folder = "C:\\Users\\s44ba\\Documents\\Projects\\JeanettesPier\\Data\\Wind\\"
+    csv_filename = 'orin7h' + desired_year + '.txt'
+    csv_fullpath = csv_folder + csv_filename
+
+    # Load space-delimited file into pandas dataframe
+    df = pd.read_csv(csv_fullpath, header=2, sep='\\s+')
+
+    # Assign column names i.e. header from NDBC ORIN7 file
+    '''''
+    #YY  MM DD hh mm WDIR WSPD GST  WVHT   DPD   APD MWD   PRES  ATMP  WTMP  DEWP  VIS  TIDE
+    #yr  mo dy hr mn degT m/s  m/s     m   sec   sec degT   hPa  degC  degC  degC   mi    ft
+    2021 01 01 00 00 292  7.5 10.8 99.00 99.00 99.00 999 1023.2  15.5  11.0 999.0 99.0 99.00
+    '''''
+    df.columns = ['YY', 'MM', 'DD', 'hh', 'mm', 'WDIR', 'WSPD', 'GST', 'WVHT', 'DPD', 'APD', 'MWD', 'PRES', 'ATMP',  'WTMP',  'DEWP',  'VIS',  'TIDE']
+
+    # Add new column, derived timestamp, initialized to 1/1/1970
+    df["timestamp"] = datetime(1970,1,1)
+
+    # Set timestamp
+    for k in range(len(df)):
+        # Set timestamp
+        df.loc[k,"timestamp"] = datetime(df.loc[k, "YY"], df.loc[k, "MM"], df.loc[k,"DD"], df.loc[k,"hh"], df.loc[k,"mm"])
+
+    # Remove rows where wind speed is 99 or wind direction is 999, saving in a new dataframe, df_qa_wspd_wdir
+    df_qa_wspd = df[df["WSPD"]<99.0]
+    df_qa_wspd_wdir = df_qa_wspd[df_qa_wspd["WDIR"]<999.0]
+
+    # Add new column, wind_speed (in meters/ec at 10m above mean sea-level), initialized to -1
+    #df_qa_wspd_wdir["wind_speed"] = -1
+    df_qa_wspd_wdir["wind_speed"] = (df_qa_wspd_wdir["WSPD"])*((10/7.5)**(1/7))*mps_per_knot
+
+    '''''
+    # Set timestamp and wind_speed
+    for k in range(len(df_qa_wspd_wdir)):
+        # Set wind_speed
+        # First convert from 7.5 m to 10 m, using formula from US Army Corp of Engineers
+        # Shore Protection Manual (1984). Then, multiply by conversion factor, mps_per_knot.
+        df_qa_wspd_wdir.loc[k,"wind_speed"] =  (df_qa_wspd_wdir.loc[k, "WSPD"])*((10/7.5)**(1/7))*mps_per_knot
+    '''''
+
+    # Subset df_qa_wspd_wdir
+    df_subset = df_qa_wspd_wdir[['timestamp','wind_speed','WDIR']]
+    df_renamed = df_subset.rename({'WDIR':'wind_dir'}, axis=1)
+
+    # Set the index to be the timestamp value
+    df_time_indexed = df_renamed.reset_index().set_index('timestamp')
+    #print(df_time_indexed.head())
+
+    # Return
+    df_wind_speeds = df_time_indexed
+    return df_wind_speeds
+
+
+def get_wind_speed(df_wind_speeds, this_timestamp):
+    '''''
+    Inputs: 
+        df_wind_speeds:
+            A pandas dataframe that contains the following fields for an entire year of data: 
+                timestamp, wind_speed, wind_dir
+        
+            where:
+                timestamp is the sample time for the wind_speed, wind_dir
+                wind_speed is in meters/sec at 10m above mean sea-level
+                wind_dir is in degrees clockwaise from North, indicating the direction the wind is coming FROM
+
+    Outputs:
+        this_wind_speed, this_wind_dir
+
+    This method slices df_wind_speeds to get the rows for a period of time prior to this_timestamp.
+    It then determines this_wind_speed, this_wind_dir for that period of time  
+     '''''
+
+    # Fudge for now
+    this_wind_speed = 3.0
+    this_wind_dir = 45.0
+    return this_wind_speed,this_wind_dir
+
+
+        
+
+
+
+
+
