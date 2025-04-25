@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from datetime import datetime
+from datetime import timedelta
 import ndbc_reader
 
 # Specify desired_year, which determines which NDBC ORIN7 file to load.
