@@ -116,7 +116,7 @@ def get_wind_speed(df_wind_speeds, this_timestamp):
 
     # Slice dataframe to get rows in the time interval
     df_sliced = df_wind_speeds.loc[start_timestamp:stop_timestamp]
-    print(df_sliced)
+    #print(df_sliced)
 
     # Average over the interval
     this_wind_speed = df_sliced["wind_speed"].mean()
