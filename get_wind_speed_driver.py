@@ -12,8 +12,6 @@ import wav_Helper
 
 '''''
 To do:
--Handle case where wind_per_wav.csv does not yet exist.
--Why is it updating instead of inserting (for 2nd row of test data)? Issue with index, so just code it to avoid dup on wav_filename_sans_ext
 
 '''''
 
