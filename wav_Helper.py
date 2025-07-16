@@ -21,6 +21,7 @@ def xlat_filename_to_datetime(wav_filename_sans_ext):
     this_formatted_datetime = wav_filename_sans_ext[start_pos:]
     # Convert to datetime
     this_datetime_format = "%Y%m%d_%H%M%S"
+    print(this_formatted_datetime)
     this_timestamp = datetime.strptime(this_formatted_datetime, this_datetime_format)
 
     # Return

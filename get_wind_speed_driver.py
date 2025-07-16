@@ -33,7 +33,11 @@ wind_per_wav_fullpath = "C:\\Users\\s44ba\\Documents\\Projects\\JeanettesPier\\O
 
 # Specify folder containing wav files
 # This program will loop through all the wav files in this folder
-wav_folder = "C:\\Users\\s44ba\\Documents\\Projects\\JeanettesPier\\Data\\Test\\"
+# wav_folder = "C:\\Users\\s44ba\\Documents\\Projects\\JeanettesPier\\Data\\Test\\"
+#wav_folder = "F:\\JeannetesPier\\data\\field measurements + environmental conditions\\acoustic impact\\2021_04_21\\21April21\\21April21\\"
+wav_folder = "F:\\JeannetesPier\\data\\field measurements + environmental conditions\\acoustic impact\\2021_04_23\\23April21\\23April21\\"
+#wav_folder = "F:\\JeannetesPier\\data\\field measurements + environmental conditions\\acoustic impact\\2024_03_14_HEROWEC_Deployment_Renamed_UTC\\background\\"
+#wav_folder = "F:\\JeannetesPier\\data\\field measurements + environmental conditions\\acoustic background\\2025_06-23\\icListen_HF1984\\"
 
 
 '''''

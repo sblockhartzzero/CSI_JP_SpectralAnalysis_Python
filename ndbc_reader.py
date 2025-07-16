@@ -61,7 +61,9 @@ def load_ndbc_file(desired_year):
 
     # Add new column, wind_speed (in meters/ec at 10m above mean sea-level), initialized to -1
     #df_qa_wspd_wdir["wind_speed"] = -1
-    df_qa_wspd_wdir["wind_speed"] = (df_qa_wspd_wdir["WSPD"])*((10/7.5)**(1/7))*mps_per_knot
+    #df_qa_wspd_wdir["wind_speed"] = (df_qa_wspd_wdir["WSPD"])*((10/7.5)**(1/7))*mps_per_knot
+    # Note that recent data is in knots, but historical data is in m/s...weird...
+    df_qa_wspd_wdir["wind_speed"] = (df_qa_wspd_wdir["WSPD"])   # CORRECTION: Historical data is already in m/s, so no need to convert
 
     '''''
     # Set timestamp and wind_speed
